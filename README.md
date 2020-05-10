@@ -43,35 +43,35 @@ Much of this type of project requires the need for moderately simple, interactiv
 
 ### 1 - Data generation from the temperature and humidity sensord.
 * The code loaded on the Arduino platform takes readings through the temperature sensor every 3 seconds, capturing:
-    * Percentage of humidity in the environment.
-    * Temperature in degrees Celsius (° C)
-    * Temperature in degrees Fahrenheit (° F)
+  * Percentage of humidity in the environment.
+  * Temperature in degrees Celsius (° C)
+  * Temperature in degrees Fahrenheit (° F)
 * The Heat Index is calculated in Celsius and Fahrenheit, which determines how people perceive the temperature according to the humidity of the environment.
 * A request is made to an external web service to determine the reading time according to a predefined time zone.
 
 ### 2 - Data publication to the MQTT server.
 * Build the message or * payload * that will be sent to the MQTT server:
-    * The payload will be built in JSON format.
-    * Contains the data captured by the sensor, the calculated information, the date / time of the reading, the number of microseconds since the Arduino platform was turned on, and a unique identifier for the issuing client.
+	* The payload will be built in JSON format.
+  * Contains the data captured by the sensor, the calculated information, the date / time of the reading, the number of microseconds since the Arduino platform was turned on, and a unique identifier for the issuing client.
 * Verifications of internet connection and MQTT server are carried out.
 * The payload is published to the MQTT server.
-    * The publication is made on a specific topic under a predefined username and password.
-    * The MQTT server has a list of permissions where it defines which users can publish information on existing topics.
+  * The publication is made on a specific topic under a predefined username and password.
+  * The MQTT server has a list of permissions where it defines which users can publish information on existing topics.
 
 ### 3, 4 and 5 - Capture data from the MQTT server in real time.
 * The Apache NiFi service has organized sets of instructions that orchestrate the data flow as it is captured:
-   * NiFi connects or *subscribes* to the Mosquitto topic and captures incoming messages in real time.
-   * NiFi complements the received message (JSON string) by defining new fields outside the string, related to technical aspects of the message and the MQTT server.
-   * NiFi inserts the JSON string and the new fields into the Hive data store.
-   * NiFi publishes the original message on Kafka.
+  * NiFi connects or *subscribes* to the Mosquitto topic and captures incoming messages in real time.
+  * NiFi complements the received message (JSON string) by defining new fields outside the string, related to technical aspects of the message and the MQTT server.
+  * NiFi inserts the JSON string and the new fields into the Hive data store.
+  * NiFi publishes the original message on Kafka.
 * Hive and Kafka persistently save the data:
-   * Hive makes it possible to perform batch processing of stored historical data.
-   * Kafka allows real-time processing of the data sent by the Arduino board.
+  * Hive makes it possible to perform batch processing of stored historical data.
+  * Kafka allows real-time processing of the data sent by the Arduino board.
 
 ### 6 and 7 - Data processing.
 * Zeppelin executes blocks of code (in Scala and SQL):
-   * It is possible to consult the data in the data warehouse.
-   * It is possible to subscribe in real time to the Kafka topic to monitor and process the data received in real time under different time windows
+  * It is possible to consult the data in the data warehouse.
+  * It is possible to subscribe in real time to the Kafka topic to monitor and process the data received in real time under different time windows
 * The code is executed on the **Spark** processing engine.
 * The data obtained in each time window are transformed and stored in tables in Hive.
 * The mean temperatures measured in Fahrenheit are calculated over time windows and stored in Hive.
@@ -83,7 +83,7 @@ The software required to upload instruction sequences to the Arduino board is ca
 
 ### ESP8266
 In order to manipulate the ESP8266 WiFi shield it is necessary to install additional components on the Arduino IDE. This will allow you to configure the compilation options of the code that will be sent to the component and use the methods and libraries to manipulate the connections.
-The installation process is detailed in the [official ESP8266 repository for Arduino] (https://github.com/esp8266/Arduino.git), but basically, the installation can be carried out using two methods:
+The installation process is detailed in the [official ESP8266 repository for Arduino](https://github.com/esp8266/Arduino.git), but basically, the installation can be carried out using two methods:
 
 #### Using the Arduino IDE Board Manager
 1. Start the Arduino IDE and open the Preferences window under the File tab.
@@ -207,9 +207,9 @@ We can open the serial monitor of the Arduino IDE to verify the execution of the
 * **Both NL & CR**
 * **115200 baud**
 
-Once the ESP8266 module receives power, it will enter the ** Flash Mode **, in which we can load the skecth instructions.
+Once the ESP8266 module receives power, it will enter the **Flash Mode**, in which we can load the skecth instructions.
 
-After the instructions have been loaded, connect the ** GPIO0 pin (white) ** of the ESP8266 module to the voltage under resistance. In this way, the ESP8266 module will not enter ** Flash Mode ** the next time the Arduino platform is started, allowing it to run the loaded code as soon as it receives power.
+After the instructions have been loaded, connect the **GPIO0 pin (white)** of the ESP8266 module to the voltage under resistance. In this way, the ESP8266 module will not enter ** Flash Mode ** the next time the Arduino platform is started, allowing it to run the loaded code as soon as it receives power.
 
 Besides, the blue pin of the DHT sensor transfers the output signals, which must be captured by the WiFi module through the **GPIO2 pin (blue)**.
 
@@ -223,7 +223,7 @@ In the serial monitor we can observe the process of connection, capture and publ
 
 ## Transfer of publications
 
-** Note: ** For information on deployment, configuration, subscription and publication on Mosquitto and Kafka it is recommended to consult [this repository] (https://github.com/Gersaibot/mosquitto-kafka-integration) about the integration between both services.
+** Note: ** For information on deployment, configuration, subscription and publication on Mosquitto and Kafka it is recommended to consult [this repository](https://github.com/Gersaibot/mosquitto-kafka-integration) about the integration between both services.
 
 If we subscribe to the Mosquitto topic we will be able to see in real time how the messages are published by the Arduino board.
 
@@ -309,10 +309,10 @@ Within the presented architecture, the services of publication, transfer and sto
 Under this premise, the applicability possibilities of this architecture are directly proportional to the creativity of implementing information-emitting devices.
 
 ## References
-* [Official Arduino documentation] (https://www.arduino.cc/reference/en/)
-* [Mosquitto official documentation] (https://mosquitto.org/documentation/)
-* [Apache NiFi official documentation] (https://nifi.apache.org/docs.html)
-* [Apache Hive Official Documentation] (https://cwiki.apache.org/confluence/display/Hive/Home#Home-HiveDocumentation)
-* [Apache Kafka official documentation] (https://kafka.apache.org/documentation/)
-* [Apache Zeppelin official documentation] (https://zeppelin.apache.org/contribution/documentation.html)
-* [More projects on Arduino] (https://create.arduino.cc/projecthub)
+* [Official Arduino documentation](https://www.arduino.cc/reference/en/)
+* [Mosquitto official documentation](https://mosquitto.org/documentation/)
+* [Apache NiFi official documentation](https://nifi.apache.org/docs.html)
+* [Apache Hive Official Documentation](https://cwiki.apache.org/confluence/display/Hive/Home#Home-HiveDocumentation)
+* [Apache Kafka official documentation](https://kafka.apache.org/documentation/)
+* [Apache Zeppelin official documentation](https://zeppelin.apache.org/contribution/documentation.html)
+* [More projects on Arduino](https://create.arduino.cc/projecthub)
