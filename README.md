@@ -18,7 +18,7 @@ In order to redirect messages between one publication service and another, it is
 It should be noted that it is beneficial to send the information to a means of persistence that allows batch processing of the information in a more traditional way. In the same order of ideas of open source tools, ** Apache Hive ** is presented as an attractive option. Hive is a relational datawarehouse that can be manipulated under an SQL-like language and has functionalities that make it stand out in clustered and / or distributed environments, facilitating the horizontal scaling of the datawarehouse, which is an important feature in projects where large volumes of information.
 
 Much of this type of project requires the need for moderately simple, interactive and quick to implement explorations. Under this premise, consoles or interactive shells based on the creation of notebooks are very useful. **Apache Zeppelin** is an incubating project consisting of an implementation of the web idea / concept noteboook, which was first introduced by IPython. Zeppelin is focused on developing analytical and interactive data processes using technologies and languages ​​such as **Shell Script**, **SQL**, **Scala (Spark)**, **Hive**, **R** and else.
-## Equipos usados
+## Used equipment
 
 * **Arduino UNO R3 Clone - (USB Chip CH340) + Cable USB**
 * **DHT11 humidity and temperature sensor**
@@ -28,7 +28,7 @@ Much of this type of project requires the need for moderately simple, interactiv
 * **Resistencia 10K**
 * **Cabling**
 
-## Versiones de herramientas
+## Tool versions
 
 * **Arduino IDE 1.8.5**
 * **Hive 1.2.1**
@@ -58,261 +58,261 @@ Much of this type of project requires the need for moderately simple, interactiv
     * The publication is made on a specific topic under a predefined username and password.
     * The MQTT server has a list of permissions where it defines which users can publish information on existing topics.
 
-### 3, 4 y 5 - Captura de datos del servidor MQTT en tiempo real.
-* El servicio Apache NiFi posee conjuntos organizados de instrucciones que orquestan el flujo de datos a medida que son captados:
-   * NiFi se conecta o *suscribe* al tópico del Mosquitto y captura los mensajes que llegan en tiempo real.
-   * NiFi complementa el mensaje recibido (cadena JSON) definiendo nuevos campos fuera de la cadena, relacionados a aspectos técnicos del mensaje y del servidor MQTT.
-   * NiFi inserta la cadena JSON y los nuevos campos en el almacén de datos Hive.
-   * NiFi publica el mensaje original en Kafka.
-* Hive y Kafka guardan de forma persistente los datos:
-   * Hive hace posible realizar procesamiento en batch de los datos históricos almacenados.
-   * Kafka permite realizar procesamiento en tiempo real de los datos enviados por la palca Arduino.
+### 3, 4 and 5 - Capture data from the MQTT server in real time.
+* The Apache NiFi service has organized sets of instructions that orchestrate the data flow as it is captured:
+   * NiFi connects or *subscribes* to the Mosquitto topic and captures incoming messages in real time.
+   * NiFi complements the received message (JSON string) by defining new fields outside the string, related to technical aspects of the message and the MQTT server.
+   * NiFi inserts the JSON string and the new fields into the Hive data store.
+   * NiFi publishes the original message on Kafka.
+* Hive and Kafka persistently save the data:
+   * Hive makes it possible to perform batch processing of stored historical data.
+   * Kafka allows real-time processing of the data sent by the Arduino board.
 
-### 6 y 7 - Procesamiento de datos.
-* Zeppelin ejecuta bloques de código (en Scala y SQL):
-   * Es posible consultar los datos en el almacén de datos.
-   * Es posible suscribirse en tiempo real al tópico de Kafka para monitorear y procesar los datos recibidos en tiempo real bajo distintas ventanas de tiempo
-* El código es ejecutado sobre el motor de procesamiento **Spark**.
-* Los datos obtenidos en cada ventana de tiempo son transformados y almacenados en tablas en Hive.
-* Se calcula la media de las temperaturas medidas en Fahrenheit sobre las ventanas de tiempo y se almacenan en Hive.
+### 6 and 7 - Data processing.
+* Zeppelin executes blocks of code (in Scala and SQL):
+   * It is possible to consult the data in the data warehouse.
+   * It is possible to subscribe in real time to the Kafka topic to monitor and process the data received in real time under different time windows
+* The code is executed on the **Spark** processing engine.
+* The data obtained in each time window are transformed and stored in tables in Hive.
+* The mean temperatures measured in Fahrenheit are calculated over time windows and stored in Hive.
 
-## Instalación
+## Installation
 
 ### Arduino IDE
-El software necesario para cargar secuencias de instrucciones a la placa de Arduino se llama Arduino IDE y puede ser descargado desde la web [oficial de arduino](https://www.arduino.cc/en/Main/Software]). Puede ser descargado para Windows, Linux y Mac OS X.
+The software required to upload instruction sequences to the Arduino board is called the Arduino IDE and can be downloaded from the [arduino official](https://www.arduino.cc/en/Main/Software]) website. It can be downloaded for Windows, Linux and Mac OS X.
 
 ### ESP8266
-Para poder manipular el shield WiFi ESP8266 es necesario instalar componentes adicionales sobre el Arduino IDE. Esto permitirá configurar las opciones de compilación del código que se enviará al componente y utilizar los métodos y librerías para manipular las conexiones. 
-El proceso de instalación se encuentra detallado en el [repositorio oficial de ESP8266 para Arduino](https://github.com/esp8266/Arduino.git), pero básicamente, la instalación puede llevarse a cabo mediante dos métodos:
+In order to manipulate the ESP8266 WiFi shield it is necessary to install additional components on the Arduino IDE. This will allow you to configure the compilation options of the code that will be sent to the component and use the methods and libraries to manipulate the connections.
+The installation process is detailed in the [official ESP8266 repository for Arduino] (https://github.com/esp8266/Arduino.git), but basically, the installation can be carried out using two methods:
 
-#### Usando el Administrador de Placas de Arduino IDE
-1. Iniciar el Arduino IDE y abrir la ventana de Preferencias bajo las pestaña Archivo.
-2. Ingresar el valor `http://arduino.esp8266.com/stable/package_esp8266com_index.json` en el campo `Gestor de URLs Adicionales de Tarjetas`.
-3. Abrir el *Gestor de Tarjetas* desde `Herramientas > Placa` e instalar la placa *esp8266*.
+#### Using the Arduino IDE Board Manager
+1. Start the Arduino IDE and open the Preferences window under the File tab.
+2. Enter the value `http://arduino.esp8266.com/stable/package_esp8266com_index.json` in the field `Additional Card URL Manager`.
+3. Open the *Card Manager* from `Tools> Board` and install the board *esp8266*.
 
-#### Usando Git
-1. Dirigirse al directorio de instalación de Arduino.
-2. Clonar el repositorio [esp8266/Arduino](https://github.com/esp8266/Arduino.git) en `hardware/esp8266com` :
+#### Using Git
+1. Go to the Arduino installation directory.
+2. Clone the [esp8266/Arduino] repository (https://github.com/esp8266/Arduino.git) in `hardware/esp8266com`:
 ```bash
 cd hardware
 mkdir esp8266com
 cd esp8266com
 git clone https://github.com/esp8266/Arduino.git esp8266
 ```
-3. Descargar los archivos binarios con Python (2.7) :
+3. Download the binary files with Python (2.7):
 ```bash
 cd esp8266/tools
 python get.py
 ```
-4. Reiniciar Arduino
+4. Restart Arduino
 
-### Librerías
-Para manipular los sensores, realizar los procesos de publicación de información y entre otras funciones es necesario instalar librerías adicionales.
+### Libraries
+To manipulate the sensors, carry out the information publication processes and among other functions, it is necessary to install additional libraries.
 
-Para instalar una librería adicional es posible usar el *Gestor de Librerías del Arduino IDE* bajo la pestaña `Programas > Incluir librería`.
+To install an additional library it is possible to use the * Arduino IDE Library Manager * under the `Programs> Include library` tab.
 
-También es posible incluir librerías descargándolas de forma local en formato .ZIP y añadiéndolas desde la pestaña `Programas > Incluir librería > Añadir librería .ZIP`
+It is also possible to include libraries by downloading them locally in .ZIP format and adding them from the `Programs> Include library> Add .ZIP library` tab.
 
-Las adicionales usadas en este proyecto son:
+The additional ones used in this project are:
 * **Adafruit Unified Sensor 1.0.2**
 * **DHT sensor library 1.3.0**
 * **PubSubClient 2.6.0**
 * **Time 1.5.0**
 * **NTPClient 3.1.0**
 
-## Montaje
+## Assembly
 
-Antes de presentar el diagrama del montaje de componentes, es necesario determinar cuáles son las entradas y salidas de cada componente y como se identifican dentro del diagrama.
+Before presenting the component assembly diagram, it is necessary to determine what the inputs and outputs of each component are and how they are identified within the diagram.
 
-### Diagrama Pinout ESP8266
+### Pinout Diagram ESP8266
 
-* **TX** - Verde
-* **GND** - Negro
-* **CH_PD** - Naranja
-* **GPIO2** - Azul
-* **GPIO0** - Blanco
-* **VCC** - Rojo
-* **RX** - Amarillo
+* **TX** - Green
+* **GND** - Black
+* **CH_PD** - Orange
+* **GPIO2** - Blue
+* **GPIO0** - White
+* **VCC** - Red
+* **RX** - Yellow
 
 ![Alt text](/images/esp8266_pinout.png?raw=true "ESP8266 Pinout Diagram")
 
 ### Diagrama Pinout DHT11
 
-* **GND** - Blanco
-* **Data** - Azul
-* **VCC** - Naranja
+* **GND** - While
+* **Data** - Blue
+* **VCC** - Orange
 
 ![Alt text](/images/dht11_pinout.png?raw=true "ESP8266 Pinout Diagram")
 
-### Diagrama Pinout del demo
+### Demo Pinout Diagram
 
-La sección superior del protoboard se encuentra dedicada a los pines del módulo **ESP8266**, el cual se alimenta con voltaje de **3.3V** y usa una resistencia de **10k**. El flujo de voltaje al módulo WiFi es controlado por el **pin verde** conectado al protoboard en la última columna de la fila de carga positiva.
+The top section of the breadboard is dedicated to the pins of the **ESP8266** module, which is powered by ** 3.3V ** voltage and uses a **10k** resistor. The voltage flow to the WiFi module is controlled by the **green pin** connected to the breadboard in the last column of the positive charge row.
 
-La sección inferior del protoboard está casi completamente dedicada al sensor de temperatura **DHT**. Este sensor trabaja con una voltaje de **5V** y una resistencia de **1k**.
+The lower section of the breadboard is almost entirely dedicated to the **DHT** temperature sensor. This sensor works with a voltage of **5V** and a resistance of **1k**.
 
 ![Alt text](images/demo_pinout_fm.png?raw=true "Demo Diagram Flash Mode")
 
-**En este proyecto no se cargan instrucciones a la placa de Arduino, sino al módulo ESP8266**, ya que es éste quien enviará los datos y es quien se encargará de la manipulación y transformación de los mismos. 
+**In this project, instructions are not loaded to the Arduino board, but to the ESP8266 module**, since it is the latter who will send the data and who will be in charge of manipulating and transforming them.
 
-Para cargar instrucciones al módulo WiFi es necesario que éste entre en Flash Mode al momento de inicio, lo cual se logra a través de la configuración de pines mostrada.
+To upload instructions to the WiFi module, it is necessary to enter the Flash Mode at the start time, which is achieved through the pin configuration shown.
 
-**Se recomienda que la placa de Arduino no tenga instrucciones cargadas al momentos de realizar la carga al módulo ESP8266.**
+**It is recommended that the Arduino board does not have instructions loaded at the time of loading the ESP8266 module.**
 
-## Configuración
+## Setting
 
-Debido a que la carga de las instrucciones no estará dirigida a la placa de arduino sino al shield WiFi, hay que seleccionar la placa ESP8266 y ajustar las opciones de compilación. Para ello seleccionamos la placa desde `Herramientas > Placa > Generic ESP8266 Module`.
+Since the loading of the instructions will not be directed to the arduino board but to the WiFi shield, it is necessary to select the ESP8266 board and adjust the compilation options. For this we select the board from `Tools> Board> Generic ESP8266 Module`.
 
-La pestaña Herramientas tendrá nuevas opciones, las cuales se configurarán de la siguiente forma:
+The Tools tab will have new options, which will be configured as follows:
 * **Flash Mode:** "DIO"
 * **Flash Size:** "512K (64 SPIFFS)"
 * **Debug port:** "Disabled"
-* **Debug level:** "Ninguno"
+* **Debug level:** "None"
 * **Reset Method:** "ck"
 * **Crystal Frequency:** "26 MHz"
 * **Flash Frequency:** "40 MHz"
 * **CPU Frequency:** "80 MHz"
 * **Upload Speed:** "115200"
-* **Programador:** "AVRISP mkII"
+* **Developer:** "AVRISP mkII"
 
-**Dependiendo del modelo del componente ESP8266 usado**, puede que sea necesario cambiar el parámetro **Upload Speed** a *9600*. Por defecto, la mayoría de los modelos trabajan bajo la velocidad de baudios *115200*.
+** Depending on the model of the ESP8266 component used **, it may be necessary to change the parameter** Upload Speed ​​** to *9600*. By default, most models work at the baud rate *115200*.
 
 ## Sketch
 
-Dentro de la comunidad de Arduino, el conjunto de instrucciones que se cargan en una placa son llamados *Sketch*. El Sketch que utilizaremos se encuentra en la carpeta `sketch` del repositorio.
+Within the Arduino community, the set of instructions that are loaded onto a board are called *Sketch*. The Sketch we will use is located in the `sketch` folder of the repository.
 
-Dentro del sketch es necesario editar la constantes declaradas al inicio con los datos pertinentes a nuestro ecosistema.
+Within the sketch it is necessary to edit the constants declared at the beginning with the data relevant to our ecosystem.
 
-El sketch se encargará de: 
-* Inicializar el monitor de serie del Arduino IDE, mediante el cual podremos visualizar las salidas del programa y monitorear el estado de ejecución.
-* Inicializar el sensor de temperatura
-* Establecer una conexión con la red WiFi definida.
-* Consultar la fecha/hora a un servidor externo de acuerdo a la zona horaria definida.
-* Definir el nombre del dispositivo emisor de datos (shield WiFi en nuestro caso)
-* Establecer conexión con el servidor MQTT.
-* Realizar lecturas del sensor de temperatura.
-* Estructurar el payload en formato JSON.
-* Enviar el payload al servidor MQTT.
-* Realizar verificaciones de conexión y lecturas.
-* Imprimir mensajes de control e información en el monitor de serie a la velocidad de baudios definida (en nuestro caso, 115200)
+The sketch will be in charge of:
+* Initialize the serial monitor of the Arduino IDE, through which we can view the program outputs and monitor the execution status.
+* Initialize temperature sensor
+* Establish a connection with the defined WiFi network.
+* Check the date / time with an external server according to the defined time zone.
+* Define the name of the data emitting device (WiFi shield in our case)
+* Establish connection to the MQTT server.
+* Take readings from the temperature sensor.
+* Structure the payload in JSON format.
+* Send the payload to the MQTT server.
+* Perform connection checks and readings.
+* Print control messages and information on the serial monitor at the defined baud rate (in our case, 115200)
 
-## Compilación, carga y ejecución
+## Compilation, loading and execution
 
-Es posible compilar el código antes de cargarlo a alguna placa haciendo clic en el botón *Verificar* de la interfaz del Arduino IDE.
+It is possible to compile the code before uploading it to any board by clicking the *Verify* button on the Arduino IDE interface.
 
-Para cargar el código al módulo ESP8266, es necesario conectar la placa Arduino al ordenador mediante el puerto USB. De esta forma, será posible definir el puerto de comunicación con la placa bajo la pestaña `Herramientas > Puerto`, donde seleccionaremos el puerto disponible.
+To upload the code to the ESP8266 module, it is necessary to connect the Arduino board to the computer through the USB port. In this way, it will be possible to define the communication port with the board under the `Tools> Port` tab, where we will select the available port.
 
-Podemos abrir el monitor de serie del Arduino IDE para verificar la ejecución del código cuando se realice la carga. Se recomiendan las siguientes opciones sobre el monitor para visualizar la información correcta:
+We can open the serial monitor of the Arduino IDE to verify the execution of the code when loading. The following monitor options are recommended to display the correct information:
 
 * **Autoscroll**
-* **Ambos NL & CR**
-* **115200 baudio**
+* **Both NL & CR**
+* **115200 baud**
 
-Una vez que el módulo ESP8266 reciba energía entrará en el **Flash Mode**, en el cual podremos cargarle las instrucciones del skecth.
+Once the ESP8266 module receives power, it will enter the ** Flash Mode **, in which we can load the skecth instructions.
 
-Luego de que las instrucciones han sido cargadas, hay que conectar el **pin GPIO0 (blanco)** del módulo ESP8266 al voltaje bajo la resistencia. De esta forma, el módulo ESP8266 no entrará en el **Flash Mode** la próxima vez que la plataforma Arduino sea iniciada, permitiendo que ejecute el código cargado apenas reciba energía.
+After the instructions have been loaded, connect the ** GPIO0 pin (white) ** of the ESP8266 module to the voltage under resistance. In this way, the ESP8266 module will not enter ** Flash Mode ** the next time the Arduino platform is started, allowing it to run the loaded code as soon as it receives power.
 
-Aparte, el pin azul del sensor DHT transfiere las señales de salida, las cuales deben ser capturadas por el módulo WiFi a través del **pin GPIO2 (azul)**.
+Besides, the blue pin of the DHT sensor transfers the output signals, which must be captured by the WiFi module through the **GPIO2 pin (blue)**.
 
-La configuración de pines quedaría de la siguiente forma:
+The pin configuration would be as follows:
 
 ![Alt text](images/demo_pinout_bm.png?raw=true "Demo Diagram Boot Mode")
 
-En el monitor de serie podemos observar el proceso de conexión, captura y publicación de mensajes.
+In the serial monitor we can observe the process of connection, capture and publication of messages.
 
 ![Alt text](images/serial_monitor.png?raw=true "Serial monitor")
 
-## Transferencia de publicaciones
+## Transfer of publications
 
-**Nota:** Para información sobre despliegue, configuración, suscripción y publicación sobre Mosquitto y Kafka se recomienda consultar [éste repositorio](https://github.com/Gersaibot/mosquitto-kafka-integration) acerca de la integración entre ambos servicios.
+** Note: ** For information on deployment, configuration, subscription and publication on Mosquitto and Kafka it is recommended to consult [this repository] (https://github.com/Gersaibot/mosquitto-kafka-integration) about the integration between both services.
 
-Si nos suscribimos al tópico de Mosquitto podremos ver en tiempo real como los mensajes son publicados por la placa de Arduino.
+If we subscribe to the Mosquitto topic we will be able to see in real time how the messages are published by the Arduino board.
 
-En la carpeta `templates` se encuentra la plantilla de NiFi utilizada para capturar los datos de Mosquitto y enviarlos tanto a Kafka como a Hive. Cabe destacar que es necesario modificar los parámetros de conexión a cada uno de estos servicios como direcciones, tópicos, nombres de tablas, entre otros. 
+In the `templates` folder you will find the NiFi template used to capture the Mosquitto data and send it to both Kafka and Hive. It should be noted that it is necessary to modify the connection parameters to each of these services such as addresses, topics, table names, among others.
 
 ![Alt text](images/nifi_template.png?raw=true "Demo Diagram Boot Mode")
 
-Los mensajes capturados son publicados exactamente igual en Kafka y en Hive. En este último, se registran campos adicionales en la tabla, relacionados al servidor MQTT desde el cual se captura la información.
+The captured messages are published exactly the same in Kafka and in Hive. In the latter, additional fields are recorded in the table, related to the MQTT server from which the information is captured.
 
-Una vez iniciada la plantilla, si nos suscribimos al tópico de Kafka al cual redirigimos los mensajes, podremos observar como los mensajes son publicados prácticamente al instante en que son recibidos en Mosquitto. En la siguiente imagen se puede apreciar la recepción de mensajes en el tópico de Mosquitto (izquierda) y el tópico de Kafka (derecha).
+Once the template is started, if we subscribe to the Kafka topic to which we redirect the messages, we will be able to see how the messages are published almost instantly when they are received in Mosquitto. In the following image you can see the reception of messages on the Mosquitto topic (left) and the Kafka topic (right).
 
 ![Alt text](/images/mosquitto_kafka.gif?raw=true "Mosquitto and Kafka")
 
-Por otro lado, si consultamos la tabla de Hive periódicamente, notaremos que el número de registros aumenta de acuerdo a los mensajes que son capturados por NiFi.
+On the other hand, if we consult the Hive table periodically, we will notice that the number of records increases according to the messages that are captured by NiFi.
 
 ![Alt text](/images/hive_query.png?raw=true "Hive")
 
-## Procesamiento en streaming
+## Streaming processing
 
-El notebook desarrollado con Scala se encuentra en la carpeta `notebooks` en formato JSON y puede ser importado en Zeppelin.
+The notebook developed with Scala is located in the `notebooks` folder in JSON format and can be imported into Zeppelin.
 
-Las tablas creadas y utilizadas son las siguientes:
+The tables created and used are as follows:
 
-* **mqtt_message_temp**: Tabla temporal que almacenará los mensajes obtenidos en una ventana.
-* **kafka_message**: Tabla que contendrá todos los datos obtenidos de cada una de las ventanas de consulta ejecutadas.
-* **mean_fahrenheit_temp**: Tabla temporal que almacenará las medias calculadas de las temperaturas (° F) obtenidas en una ventana.
-* **kafka_means_fahrenheit**: Tabla que contendrá todas las medias calculadas de cada una de las ventanas de consulta ejecutadas.
-* **gen_test_data**: Tabla que contiene datos generados aleatoriamente para probar el modelo de clasificación Kmedias. Los datos pueden encontrarse en la carpeta `data/test_data`. Los datos fueron generados bajo las siguientes especificaciones:
-   * **id**: Entero autoincremental (unidad) desde valor `1`.
-   * **fecha**: String en formato `yyyy-MM-dd'T'HH:mm:ssZ` entre `2016-11-10` y `2018-10-31`.
-   * **timestamp**: String de marca de tiempo en formato Unix desde `1478965467` hasta `1541592359`.
-   * **fahrenheit**: String numérico aleatorio entre `15` y `125`.
-   * **humedad**: String numérico aleatorio entre `25` y `85`.
+* **mqtt_message_temp**: Temporary table that will store the messages obtained in a window.
+* **kafka_message**: Table that will contain all the data obtained from each of the query windows executed.
+* **mean_fahrenheit_temp**: Temporary table that will store the calculated averages of the temperatures (° F) obtained in a window.
+* **kafka_means_fahrenheit**: Table that will contain all the calculated means of each one of the executed query windows.
+* **gen_test_data**: Table containing randomly generated data to test the Kmedias classification model. The data can be found in the `data / test_data` folder. The data was generated under the following specifications:
+   * **id**: Autoincremental integer (unit) from value `1`.
+   * **date**: String in format `yyyy-MM-dd'T'HH: mm: ssZ` between` 2016-11-10` and `2018-10-31`.
+   * **timestamp**: Timestamp string in Unix format from `1478965467` to` 1541592359`.
+   * **fahrenheit**: Random numeric string between `15` and` 125`.
+   * **humidity**: Random numeric string between `25` and` 85`.
 
-El notebook contiene los siguientes 7 párrafos:
+The notebook contains the following 7 paragraphs:
 
 1. **Setup**
-   * Importación de paquetes y librerías usadas en el resto de los párrafos.
-   * Definición intervalo de segundos para el StreamingContext (batchIntervalSeconds).
-   * Definición de duración de las ventanas de consulta (windowIntervalSeconds).
-   * Defunción de parámetros de configuración para la conexión con Kafka bajo su antiguo API (kafkaConf).
-2. **Captura de datos**
-   * Verificaciones sobre contextos creados y/o creación de nuevos contextos.
-   * Establecimiento de conexión con Kafka.
-   * Ejecución de ventana de consulta sobre Kafka.
-   * Calculo de la media de las temperaturas (°F) recibidas en la ventana.
-   
+   * Import of packages and libraries used in the rest of the paragraphs.
+   * Definition second interval for the StreamingContext (batchIntervalSeconds).
+   * Definition of duration of query windows (windowIntervalSeconds).
+   * Death of configuration parameters for the connection to Kafka under its old API (kafkaConf).
+2. **Data capture**
+   * Verifications on created contexts and/or creation of new contexts.
+   * Establishment of connection with Kafka.
+   * Execution of query window on Kafka.
+   * Calculation of the average of the temperatures (° F) received in the window.
+   
 ![Alt text](/images/notebook_streaming.png?raw=true "Kafka messages in real time")
 
-3. **Asociación de marcas de tiempo a medias**
-   //probar notebook unificando cálculo de medias en un mismo párrafo <-
-   * Asociación de la media calculada con marca de tiempo de generación de datos.
-4. **Creación y entrenamiento de modelo Kmedias**
-   * Transformación de datos históricos de ventanas como entrada al modelo.
-   * Entrenamiento del modelo Kmedias en base a la temperatura (°F) y la humedad.
-   * Almacenamiento de modelo en HDFS.
-   * Calculo de la suma de los cuadrados dentro de cada clúster.
-5. **Clasificación**
-   * Carga de modelo previamente entrenado y almacenado en HDFS.
-   * Clasificación de puntos obtenidos en la última ventana consultada.
-   * Visualización de resultados.
-6. **Clasificación - Datos aleatorios**
-   * Carga de modelo previamente entrenado y almacenado en HDFS.
-   * Clasificación de puntos aleatoriamente generados bajo rangos específicos.
-   * Visualización de resultados.
+3. **Half Timestamp Association**
+   // test notebook unifying calculation of means in the same paragraph <-
+   * Association of the calculated mean with time stamp of data generation.
+4. **Creation and training of Kmedias model**
+   * Transformation of historical window data as input to the model.
+   * Kmedias model training based on temperature (° F) and humidity.
+   * Storage of model in HDFS.
+   * Calculation of the sum of squares within each cluster.
+5. **Classification**
+   * Upload of previously trained model stored in HDFS.
+   * Classification of points obtained in the last window consulted.
+   * Visualization of results.
+6. **Ranking - Random Data**
+   * Upload of previously trained model stored in HDFS.
+   * Classification of randomly generated points under specific ranges.
+   * Visualization of results.
 ![Alt text](/images/notebook_kmeans.png?raw=true "Kmeas prediction over random data")
-7. **Seguimiento de datos**
-   * Visualización de la evolución de la humedad y la temperatura (°C y °F) a lo largo del tiempo sobre los datos históricos de ventanas.
+7. ** Data tracking **
+   * Visualization of the evolution of humidity and temperature (° C and ° F) over time on historical window data.
 ![Alt text](/images/notebook_kmeans.png?raw=true "Humidity and temperature overview over time")
 
-## Mejoras
+## Improvements
 
-Este proyecto carece de las siguientes características que podrían aumentar el valor de la idea que se desea transmitir:
-* Integración de placa Arduino con distintos tipos de sensores.
-* Multiplicación de señales enviadas al módulo WiFi.
-* Desarrollo de indicadores físicos de control y status sobre la ejecución de las instrucciones (LEDs, alertas, alarmas).
-* Botón de activación/desactivación del **Flash Mode** del dispositivo WiFi.
+This project lacks the following characteristics that could increase the value of the idea that you want to convey:
+* Arduino board integration with different types of sensors.
+* Multiplication of signals sent to the WiFi module.
+* Development of physical indicators of control and status on the execution of instructions (LEDs, alerts, alarms).
+* Button to enable/disable the **Flash Mode** of the WiFi device.
 
-## Conclusiones
+## Conclusions
 
-Dentro de la arquitectura presentada los servicios de publicación, transferencia y almacenamiento de datos son agnósticos al formato en la cual los datos son enviados por la placa Arduino. Esta característica impulsa la idea de construir un servicio centralizado de distribución de mensajes, provenientes de distintos dispositivos emisores, hacia distintos clientes o servicios capaces de consumir estos datos.
+Within the presented architecture, the services of publication, transfer and storage of data are agnostic to the format in which the data is sent by the Arduino board. This feature drives the idea of ​​building a centralized message distribution service, from different sending devices, to different clients or services capable of consuming this data.
 
-Bajo esta premisa, las posibilidades de aplicabilidad de esta arquitectura son directamente proporcionales a la creatividad de implementación dispositivos emisores de información.
+Under this premise, the applicability possibilities of this architecture are directly proportional to the creativity of implementing information-emitting devices.
 
-## Referencias
-* [Documentación oficial de Arduino](https://www.arduino.cc/reference/en/)
-* [Documentación oficial de Mosquitto](https://mosquitto.org/documentation/)
-* [Documentación oficial de Apache NiFi](https://nifi.apache.org/docs.html)
-* [Documentación oficial de Apache Hive](https://cwiki.apache.org/confluence/display/Hive/Home#Home-HiveDocumentation)
-* [Documentación oficial de Apache Kafka](https://kafka.apache.org/documentation/)
-* [Documentación oficial de Apache Zeppelin](https://zeppelin.apache.org/contribution/documentation.html)
-* [Más proyectos sobre Arduino](https://create.arduino.cc/projecthub)
+## References
+* [Official Arduino documentation] (https://www.arduino.cc/reference/en/)
+* [Mosquitto official documentation] (https://mosquitto.org/documentation/)
+* [Apache NiFi official documentation] (https://nifi.apache.org/docs.html)
+* [Apache Hive Official Documentation] (https://cwiki.apache.org/confluence/display/Hive/Home#Home-HiveDocumentation)
+* [Apache Kafka official documentation] (https://kafka.apache.org/documentation/)
+* [Apache Zeppelin official documentation] (https://zeppelin.apache.org/contribution/documentation.html)
+* [More projects on Arduino] (https://create.arduino.cc/projecthub)
